@@ -1,0 +1,203 @@
+<const API = "http://127.0.0.1:8000";  <!-- ✅ ADD THIS HERE -->
+
+async function runProfiler() {
+    ...
+}>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Vector Query Profiler</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+}
+
+header {
+    padding: 15px;
+    background: #1e293b;
+    text-align: center;
+    font-size: 22px;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    padding: 15px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.full {
+    grid-column: span 2;
+}
+
+input, textarea, button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    border-radius: 6px;
+    border: none;
+}
+
+button {
+    background: #3b82f6;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #2563eb;
+}
+
+pre {
+    background: #0b1220;
+    padding: 10px;
+    border-radius: 8px;
+    overflow: auto;
+    max-height: 300px;
+}
+</style>
+</head>
+
+<body>
+
+<header>AI Vector Query Profiler Dashboard</header>
+
+<div class="container">
+
+<!-- SQL -->
+<div class="card">
+<h3>SQL Query</h3>
+<textarea id="sql">SELECT * FROM mock_employees</textarea>
+</div>
+
+<!-- VECTOR -->
+<div class="card">
+<h3>Vector Query</h3>
+<textarea id="vector">salary information</textarea>
+</div>
+
+<!-- RUN -->
+<div class="card full">
+<button onclick="runProfiler()">Run Profiler</button>
+</div>
+
+<!-- OUTPUT -->
+<div class="card full">
+<h3>Output</h3>
+<pre id="output">Results will appear here...</pre>
+</div>
+
+<!-- FILE UPLOAD -->
+<div class="card full">
+<h3>Upload File (CSV/XLSX)</h3>
+<input type="file" id="fileInput">
+<button onclick="uploadFile()">Upload</button>
+<pre id="uploadOut"></pre>
+</div>
+
+<!-- SCHEMA -->
+<div class="card full">
+<h3>Database Schema</h3>
+<button onclick="getSchema()">Show Schema</button>
+<pre id="schemaOut"></pre>
+</div>
+
+<!-- HISTORY -->
+<div class="card full">
+<h3>Query History</h3>
+<button onclick="getHistory()">Load History</button>
+<pre id="historyOut"></pre>
+</div>
+
+</div>
+
+<script>
+
+const API = "http://127.0.0.1:8000"; // backend
+
+async function runProfiler() {
+    try {
+        const res = await fetch("http://127.0.0.1:8000/profiler", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                sql: document.getElementById("sql").value,
+                vector: document.getElementById("vector").value
+            })
+        });
+
+        const data = await res.json();
+
+        document.getElementById("output").innerText =
+            JSON.stringify(data, null, 2);
+
+    } catch (err) {
+        document.getElementById("output").innerText =
+            "Error: " + err.message;
+    }
+}
+
+async function uploadFile() {
+    try {
+        const file = document.getElementById("fileInput").files[0];
+
+        let formData = new FormData();
+        formData.append("file", file);
+
+        const res = await fetch("http://127.0.0.1:8000/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await res.json();
+
+        document.getElementById("uploadOut").innerText =
+            JSON.stringify(data, null, 2);
+
+    } catch (err) {
+        document.getElementById("uploadOut").innerText =
+            "Error: " + err.message;
+    }
+}
+
+async function getSchema() {
+    try {
+        const res = await fetch("http://127.0.0.1:8000/schema");
+        const data = await res.json();
+
+        document.getElementById("schemaOut").innerText =
+            JSON.stringify(data, null, 2);
+
+    } catch (err) {
+        document.getElementById("schemaOut").innerText =
+            "Error: " + err.message;
+    }
+}
+
+async function getHistory() {
+    try {
+        const res = await fetch("http://127.0.0.1:8000/history");
+        const data = await res.json();
+
+        document.getElementById("historyOut").innerText =
+            JSON.stringify(data, null, 2);
+
+    } catch (err) {
+        document.getElementById("historyOut").innerText =
+            "Error: " + err.message;
+    }
+}
+</script>
+
+</body>
+</html>
