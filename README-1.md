@@ -1,4 +1,4 @@
-# AI-Powered Vector Database Query Profiler
+# Vector Database Query Profiler
 
 ## Technologies Used
 - FastAPI
