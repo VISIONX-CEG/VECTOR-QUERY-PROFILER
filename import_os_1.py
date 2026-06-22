@@ -1,6 +1,3 @@
-# vector_query_profiler.py
-
-
 # ==========================================================
 # AI Powered Vector Database Query Profiler
 # Google Colab / VS Code Compatible
@@ -30,7 +27,7 @@ except Exception:
     psutil = None
 
 try:
-    import gradio as gr
+    import gradio as gr 
 except ImportError:
     gr = None
 
@@ -722,7 +719,7 @@ try:
         debug=True,
         inbrowser=True,
         server_name="0.0.0.0",
-        server_port=7860
+        server_port=8000
     )
 
 except Exception:
